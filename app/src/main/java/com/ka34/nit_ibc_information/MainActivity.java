@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -28,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 public class MainActivity extends AppCompatActivity {
-    final String version = "1.0.0";
+    final String version = "1.0.1";
     String newVersion;
     HTMLparser parse = new HTMLparser();
     private UserSetting userSetting;
@@ -68,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
                                 userSetting.abroad = null;
                             }
                             userSetting.savaInstance(getApplicationContext());
-                            my = new String[]{userSetting.grade + userSetting.dep, userSetting.grade + "年",userSetting.grade+"の"+userSetting.clas};
                             parse.GetfilterList(userSetting.grade,userSetting.dep,userSetting.clas,userSetting.abroad);
                             ListView();
                         }
@@ -81,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "ネットワークに接続されていません。\n前回取得時のデータを表示します。", Toast.LENGTH_LONG).show();
                 userSetting = UserSetting.getInstance(getApplicationContext());
                 parse.parseList = userSetting.parseData;
-                String[] my = {userSetting.grade+userSetting.dep,userSetting.grade+"年",userSetting.grade+"の"+userSetting.clas};
                 parse.GetfilterList(userSetting.grade,userSetting.dep,userSetting.clas,userSetting.abroad);
                 ListView();
 
@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             userSetting = UserSetting.getInstance(getApplicationContext());
             parse.parseList = userSetting.parseData;
-            String[] my = {userSetting.grade+userSetting.dep,userSetting.grade+"年",userSetting.grade+"の"+userSetting.clas};
             parse.GetfilterList(userSetting.grade,userSetting.dep,userSetting.clas,userSetting.abroad);
             ListView();
             Log.d("a", "reloaded");
@@ -121,7 +120,15 @@ public class MainActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(message)
-                .setPositiveButton("OK", null)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Uri uri = Uri.parse("https://08c3209a9291fd0cede87c16e7f19bd6e0c05c1d.googledrive.com/host/0BwTonu4uzP9sflh1MlRTd204XzVvVk1IMFhyclphUjlqQXc1NFJOM1dPazVxbF9EZEVwQUk/");
+                        Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("Cancel", null)
                 .show();
     }
 
@@ -178,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
                 this.m_ProgressDialog.dismiss();
             }
             if(!version.equals(newVersion)){
-                alert("アップデート情報","新しいバージョンがあります。\nアップデートしてくだしあ");
+                alert("アップデート情報","新しいバージョンがあります。\n今からアプデしますか？");
             }
         }
 
@@ -221,7 +228,6 @@ public class MainActivity extends AppCompatActivity {
                         userSetting.abroad = null;
                     }
                     userSetting.savaInstance(getApplicationContext());
-                    my = new String[]{userSetting.grade + userSetting.dep, userSetting.grade + "年",userSetting.grade+"の"+userSetting.clas};
                     parse.GetfilterList(userSetting.grade,userSetting.dep,userSetting.clas,userSetting.abroad);
                     ListView();
                 }

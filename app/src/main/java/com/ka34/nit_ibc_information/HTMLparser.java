@@ -187,7 +187,14 @@ public class HTMLparser {
             tmpMap = parseList.get(i);
             if (!tmpMap.get("type").equals("other")) {
                 String tmpclas = tmpMap.get("clas");
-                String month = extractMatchString("(\\d|\\d\\d)月", tmpMap.get("date"));
+                Pattern pmonth = Pattern.compile("\\d\\d月");
+                Matcher mmonth = pmonth.matcher(tmpMap.get("date"));
+                String month;
+                if (mmonth.find()){
+                    month = extractMatchString("(\\d\\d)月", tmpMap.get("date"));
+                } else {
+                    month = "0"+ extractMatchString("(\\d)月", tmpMap.get("date"));
+                }
                 Pattern p = Pattern.compile("\\d\\d日");
                 Matcher m = p.matcher(tmpMap.get("date"));
                 String date;
